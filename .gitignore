@@ -34,3 +34,6 @@ dist/
 frontend/dist/
 frontend/.vite/
 *.log
+
+# Internal specifications & notes
+files/
