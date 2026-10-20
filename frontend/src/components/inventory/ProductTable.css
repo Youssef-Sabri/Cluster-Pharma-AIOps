@@ -1,0 +1,179 @@
+.ptable-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+}
+
+.ptable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  background: var(--color-bg-surface);
+}
+
+.ptable thead th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-sunken);
+  border-bottom: 1px solid var(--color-bg-border);
+  white-space: nowrap;
+}
+
+.ptable tbody th,
+.ptable tbody td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-bg-border);
+  vertical-align: middle;
+}
+
+.ptable tbody tr:last-child th,
+.ptable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Soft red wash on critical rows so urgency is legible at a glance, before
+   reading the badge. Kept light enough that text contrast is unaffected. */
+.ptable__row--critical {
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.ptable__row--critical:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.ptable__row--low:hover {
+  background: rgba(245, 158, 11, 0.07);
+}
+
+.ptable__row:hover {
+  background: var(--color-primary-tint);
+}
+
+.ptable__row--selected {
+  background: var(--color-primary-tint);
+  box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+.ptable__row--expanded {
+  background: var(--color-primary-tint);
+}
+
+.ptable__expand-col {
+  width: 36px;
+  padding-right: 0 !important;
+}
+
+.ptable__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.ptable__chevron:hover {
+  background: var(--color-bg-sunken);
+  color: var(--color-primary);
+}
+
+.ptable__num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ptable__drug {
+  min-width: 170px;
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.ptable__name-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ptable__name-btn:hover {
+  color: var(--color-primary);
+}
+
+.ptable__category {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.ptable__stock {
+  width: 84px;
+  padding: 6px var(--space-2);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--color-text-primary);
+}
+
+.ptable__stock::placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.ptable__stock:focus-visible {
+  border-color: var(--color-primary);
+}
+
+.ptable__cover {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+.ptable__view {
+  padding: 5px var(--space-3);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.ptable__view:hover {
+  border-color: var(--color-primary);
+}
+
+.ptable-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-6);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.ptable-empty p {
+  margin: 0;
+}

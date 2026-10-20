@@ -1,0 +1,110 @@
+.oinput {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.oinput__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.oinput__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.oinput__subtitle {
+  margin-top: 2px;
+  max-width: 62ch;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.oinput__pharmacy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 150px;
+}
+
+.oinput__pharmacy span {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.oinput__pharmacy select {
+  padding: 9px var(--space-3);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.oinput__pharmacy select:hover {
+  border-color: var(--color-primary);
+}
+
+.oinput__area {
+  width: 100%;
+  padding: var(--space-4);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  resize: vertical;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.oinput__area::placeholder {
+  color: var(--color-text-muted);
+}
+
+.oinput__area:hover {
+  border-color: var(--color-border-hover);
+}
+
+.oinput__area:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-glow);
+}
+
+.oinput__actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.oinput__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.oinput__spin {
+  animation: oinput-spin 1s linear infinite;
+}
+
+@keyframes oinput-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

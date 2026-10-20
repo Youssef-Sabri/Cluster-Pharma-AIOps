@@ -1,0 +1,43 @@
+.dchart {
+  width: 100%;
+  min-width: 0;
+}
+
+.dchart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  border: 1px dashed var(--color-bg-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.dchart-tooltip {
+  min-width: 160px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-overlay);
+}
+
+.dchart-tooltip__date {
+  margin-bottom: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-bg-border);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.dchart-tooltip__line {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+}
+
+.dchart-tooltip__line.muted {
+  color: var(--color-text-secondary);
+}

@@ -1,0 +1,43 @@
+# ---------------------------------------------------------------------------
+# ClusterOps backend — pinned production dependency set (Phase 1).
+#   pip install -r requirements.txt
+#
+# Target interpreter: CPython 3.11 (x86_64 Linux/Docker). Several pins below
+# (numpy 1.26.4, pandas 2.2.3, scipy 1.14.1, lightgbm 4.5.0) publish wheels for
+# cp311 only, which is why the backend image and the verification container
+# are both pinned to python:3.11-slim.
+# ---------------------------------------------------------------------------
+
+# --- Web / API ---
+fastapi==0.115.0
+uvicorn[standard]==0.31.0
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# --- Persistence ---
+sqlalchemy==2.0.35
+asyncpg==0.29.0
+alembic==1.13.3
+psycopg2-binary==2.9.9
+
+# --- Machine learning ---
+lightgbm==4.5.0
+scikit-learn==1.5.2
+numpy==1.26.4
+pandas==2.2.3
+scipy==1.14.1
+rapidfuzz==3.10.0
+# DEVIATION FROM SPEC: the phase document pins google-genai==0.1.1, but that
+# version was never published (the package starts at 0.7.0), so the pin set was
+# uninstallable. 0.7.0 is the earliest published release and exposes the same
+# `google.genai` client surface used by the Phase 3 order matcher.
+google-genai==0.7.0
+
+# --- Platform / AIOps tooling ---
+mlflow==2.16.2
+prefect==3.0.4
+prometheus-client==0.21.0
+
+# --- Utilities ---
+httpx==0.27.2
+python-dotenv==1.0.1

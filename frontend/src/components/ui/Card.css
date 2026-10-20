@@ -1,0 +1,101 @@
+.card {
+  position: relative;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+/* Left-edge accent stripe, tinted per tone. */
+.card::before {
+  content: '';
+  position: absolute;
+  inset-block: var(--space-4);
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  transition: background var(--transition-base);
+}
+
+.card--accent::before {
+  background: var(--color-primary);
+}
+.card--success::before {
+  background: var(--color-success);
+}
+.card--warning::before {
+  background: var(--color-warning);
+}
+.card--danger::before {
+  background: var(--color-danger);
+}
+.card--info::before {
+  background: var(--color-info);
+}
+
+.card--accent {
+  border-color: var(--color-primary-border);
+}
+.card--success {
+  border-color: var(--color-success-border);
+}
+.card--warning {
+  border-color: var(--color-warning-border);
+}
+.card--danger {
+  border-color: var(--color-danger-border);
+}
+.card--info {
+  border-color: var(--color-info-border);
+}
+
+.card--glow {
+  box-shadow: var(--shadow-raised), var(--shadow-glow);
+  border-color: var(--color-primary-border);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-raised);
+}
+
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6) 0;
+}
+
+.card__title {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+}
+
+.card__action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.card__body {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.card--flush .card__body {
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .card__header,
+  .card__body {
+    padding-inline: var(--space-4);
+  }
+}

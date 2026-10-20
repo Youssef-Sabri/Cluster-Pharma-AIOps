@@ -1,0 +1,17 @@
+# Grafana provisioning: wire the Prometheus data source and the pre-built dashboard
+# so a fresh `docker compose up` shows the ClusterOps board without manual setup.
+#
+# Synthetic data only.
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: ${DS_PROMETHEUS}
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    jsonData:
+      timeInterval: 15s

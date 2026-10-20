@@ -1,0 +1,135 @@
+.gate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+}
+
+.gate__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.gate__title {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.gate__badge {
+  padding: 4px var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid;
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.gate__badge--idle {
+  border-color: var(--color-bg-border);
+  background: var(--color-bg-sunken);
+  color: var(--color-text-secondary);
+}
+
+.gate__badge--pass {
+  border-color: var(--color-success-border);
+  background: var(--color-success-tint);
+  color: var(--color-success-text);
+}
+
+.gate__badge--fail {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-tint);
+  color: var(--color-danger-text);
+}
+
+/* --------------------------------------------------------------------------
+   Formula
+   -------------------------------------------------------------------------- */
+
+.gate__formula {
+  padding: var(--space-4);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-sunken);
+  overflow-x: auto;
+}
+
+.gate__expr {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.gate__op {
+  font-weight: var(--font-weight-semibold);
+}
+
+.gate__eq {
+  color: var(--color-text-secondary);
+}
+
+.gate__frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.35;
+}
+
+.gate__num {
+  padding: 0 var(--space-2);
+}
+
+.gate__minus {
+  color: var(--color-text-secondary);
+}
+
+.gate__bar {
+  width: 100%;
+  min-width: 96px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.gate__den {
+  padding: 0 var(--space-2);
+}
+
+.gate__threshold {
+  font-weight: var(--font-weight-semibold);
+}
+
+.gate__blank {
+  font-style: italic;
+}
+
+.gate__result {
+  padding: 3px var(--space-3);
+  border: 1px solid;
+  border-radius: var(--radius-sm);
+}
+
+.gate__note {
+  font-size: var(--font-size-xs);
+  line-height: 1.6;
+  max-width: 76ch;
+}
+
+@media (max-width: 640px) {
+  .gate__expr {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+}

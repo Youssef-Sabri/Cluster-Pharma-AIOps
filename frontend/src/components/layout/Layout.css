@@ -1,0 +1,32 @@
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--color-bg-base);
+}
+
+.layout__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.layout__content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--content-max-width);
+  padding: var(--space-6) var(--space-8);
+}
+
+/* Below the tablet breakpoint the sidebar becomes a horizontal band above the
+   content instead of collapsing behind a toggle — with only seven nav items it
+   stays legible without hiding anything behind a gesture. */
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .layout__content {
+    padding: var(--space-4);
+  }
+}

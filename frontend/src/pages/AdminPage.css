@@ -1,0 +1,104 @@
+.admin {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* --------------------------------------------------------------------------
+   Sub-navigation
+   -------------------------------------------------------------------------- */
+
+.admin__tabs {
+  display: flex;
+  gap: var(--space-1);
+  padding: 4px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-pill);
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.admin__tab {
+  padding: 8px var(--space-5);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.admin__tab:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-sunken);
+}
+
+.admin__tab--active {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  font-weight: var(--font-weight-semibold);
+}
+
+.admin__tab--active:hover {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.admin__tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.admin__tab-blurb {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: calc(-1 * var(--space-2));
+}
+
+.admin__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.admin__links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+
+.admin__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.admin__link:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-tint);
+  color: var(--color-primary-dark);
+}
+
+.admin__note {
+  margin-top: var(--space-4);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}

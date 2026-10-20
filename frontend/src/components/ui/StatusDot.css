@@ -1,0 +1,58 @@
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.status-dot__mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+  background: currentColor;
+}
+
+.status-dot--online {
+  background: var(--color-success-tint);
+  border-color: var(--color-success-border);
+  color: var(--color-success-text);
+}
+
+.status-dot--offline {
+  background: var(--color-danger-tint);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger-text);
+}
+
+.status-dot--connecting {
+  background: var(--color-warning-tint);
+  border-color: var(--color-warning-border);
+  color: var(--color-warning-text);
+}
+
+.status-dot--degraded {
+  background: var(--color-warning-tint);
+  border-color: var(--color-warning-border);
+  color: var(--color-warning-text);
+}
+
+.status-dot--connecting .status-dot__mark,
+.status-dot--online .status-dot__mark {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}

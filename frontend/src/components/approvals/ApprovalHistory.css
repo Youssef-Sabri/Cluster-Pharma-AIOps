@@ -1,0 +1,69 @@
+.ahist__empty {
+  padding: var(--space-6) 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.ahist__scope {
+  margin-top: var(--space-3);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.ahist__wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+}
+
+.ahist {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  background: var(--color-bg-surface);
+}
+
+.ahist thead th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-sunken);
+  border-bottom: 1px solid var(--color-bg-border);
+  white-space: nowrap;
+}
+
+.ahist tbody th,
+.ahist tbody td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-bg-border);
+  vertical-align: middle;
+}
+
+.ahist tbody tr:last-child th,
+.ahist tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ahist__raw {
+  text-align: left;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.ahist__final {
+  color: var(--color-text-primary);
+}
+
+.ahist__source,
+.ahist__when {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}

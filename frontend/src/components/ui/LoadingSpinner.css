@@ -1,0 +1,13 @@
+.spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  animation: spinner-rotate 850ms linear infinite;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}

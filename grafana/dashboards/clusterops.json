@@ -1,0 +1,343 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "datasource", "uid": "grafana" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "ClusterOps AIOps dashboard — request throughput and error rate, p95 latency against the 500 ms SLA, PSI drift per monitored feature against the 0.20 alert threshold, match-confidence distribution, forecast MAE and the human-review rate. All data is synthetic.",
+  "editable": true,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 10, "lineWidth": 1 },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (endpoint, method) (rate(clusterops_requests_total[$__rate_interval]))",
+          "legendFormat": "{{method}} {{endpoint}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Request throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 0.01 },
+              { "color": "red", "value": 0.05 }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 0 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(rate(clusterops_requests_total{status_code=~\"5..\"}[$__rate_interval])) / clamp_min(sum(rate(clusterops_requests_total[$__rate_interval])), 0.001)",
+          "legendFormat": "5xx rate",
+          "refId": "A"
+        }
+      ],
+      "title": "Error rate (5xx)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.5 }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 0 },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.95, sum(rate(clusterops_request_duration_seconds_bucket[$__rate_interval])) by (le))",
+          "legendFormat": "p95",
+          "refId": "A"
+        }
+      ],
+      "title": "p95 latency (SLA 500 ms)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisLabel": "seconds",
+            "drawStyle": "line",
+            "fillOpacity": 5,
+            "lineWidth": 2,
+            "showPoints": "never",
+            "spanNulls": true
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 8 },
+      "id": 4,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.50, sum(rate(clusterops_request_duration_seconds_bucket[$__rate_interval])) by (le, endpoint))",
+          "legendFormat": "p50 {{endpoint}}",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.95, sum(rate(clusterops_request_duration_seconds_bucket[$__rate_interval])) by (le, endpoint))",
+          "legendFormat": "p95 {{endpoint}}",
+          "refId": "B"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "histogram_quantile(0.99, sum(rate(clusterops_request_duration_seconds_bucket[$__rate_interval])) by (le, endpoint))",
+          "legendFormat": "p99 {{endpoint}}",
+          "refId": "C"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "vector(0.5)",
+          "hide": false,
+          "legendFormat": "SLA (500 ms)",
+          "refId": "SLA"
+        }
+      ],
+      "title": "Latency percentiles vs 500 ms SLA",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisLabel": "PSI",
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "always",
+            "spanNulls": true
+          },
+          "max": 0.5,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 0.1 },
+              { "color": "red", "value": 0.2 }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 8 },
+      "id": 5,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "clusterops_drift_psi_score",
+          "legendFormat": "{{feature_name}}",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "vector(0.2)",
+          "legendFormat": "DRIFT threshold (0.20)",
+          "refId": "T"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "vector(0.1)",
+          "legendFormat": "WARNING threshold (0.10)",
+          "refId": "W"
+        }
+      ],
+      "title": "Drift PSI per feature",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 60, "lineWidth": 1 },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 17 },
+      "id": 6,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum by (le) (rate(clusterops_match_confidence_bucket[$__rate_interval]))",
+          "format": "heatmap",
+          "legendFormat": "{{le}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Match confidence distribution",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 },
+              { "color": "red", "value": 10 }
+            ]
+          },
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 17 },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "sum(increase(clusterops_low_confidence_total[15m]))",
+          "legendFormat": "review queue",
+          "refId": "A"
+        }
+      ],
+      "title": "Low-confidence items (15m)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 3 },
+              { "color": "red", "value": 6 }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 17 },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "expr": "topk(5, clusterops_forecast_mae)",
+          "legendFormat": "{{product_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Worst forecast MAE (top 5)",
+      "type": "bargauge"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["clusterops", "aiops", "synthetic"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "ClusterOps AIOps",
+  "uid": "clusterops-aiops",
+  "version": 1,
+  "weekStart": ""
+}

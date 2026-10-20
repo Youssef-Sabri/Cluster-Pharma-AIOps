@@ -1,0 +1,109 @@
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  color: inherit;
+  min-width: 0;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(15, 110, 255, 0.3);
+  box-shadow: 0 12px 36px rgba(15, 110, 255, 0.12);
+  color: inherit;
+}
+
+.kpi-card--unavailable {
+  background: var(--color-bg-sunken);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.kpi-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.kpi-card__label {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.kpi-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  transition: all var(--transition-fast);
+}
+
+.kpi-card:hover:not(.kpi-card--unavailable) .kpi-card__icon {
+  background: var(--color-primary);
+  color: #ffffff;
+  transform: scale(1.04);
+}
+
+.kpi-card__value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  color: var(--color-text-primary);
+}
+
+.kpi-card__value--unavailable {
+  color: var(--color-text-muted);
+}
+
+.kpi-card__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.kpi-card__reason {
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.kpi-card__skeleton {
+  width: 45%;
+  height: 34px;
+}
+
+.kpi-card__skeleton-sm {
+  width: 70%;
+  height: 12px;
+}
+
+.kpi-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.kpi-card--unavailable .kpi-card__cta {
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,121 @@
+.approvals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 1180px;
+}
+
+.approvals__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.approvals__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.approvals__filter-label {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.approvals__select {
+  padding: 8px var(--space-3);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.approvals__select:hover {
+  border-color: var(--color-primary);
+}
+
+.approvals__legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.approvals__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.approvals__legend-item svg {
+  color: var(--color-text-muted);
+}
+
+.approvals__legend-item kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--color-bg-border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-sunken);
+  font-family: var(--font-family);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.approvals__updating {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.approvals__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.approvals__pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+.approvals__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+}
+
+.approvals__empty svg {
+  color: var(--color-success);
+}
+
+.approvals__empty-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.approvals__empty-text {
+  max-width: 44ch;
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}

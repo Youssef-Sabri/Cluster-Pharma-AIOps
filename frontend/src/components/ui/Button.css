@@ -1,0 +1,123 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--sm {
+  padding: 6px 14px;
+  font-size: var(--font-size-xs);
+}
+
+.btn--md {
+  padding: 10px 22px;
+  font-size: var(--font-size-sm);
+}
+
+.btn--lg {
+  padding: 14px 28px;
+  font-size: var(--font-size-base);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: 0 4px 14px rgba(15, 110, 255, 0.28);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15, 110, 255, 0.38);
+}
+
+.btn--secondary {
+  background: var(--color-bg-surface);
+  border-color: var(--color-bg-border);
+  color: var(--color-text-primary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+  transform: translateY(-1px);
+}
+
+.btn--danger {
+  background: var(--color-danger-tint);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger);
+}
+
+.btn--danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.16);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--color-bg-sunken);
+  color: var(--color-text-primary);
+}
+
+/* Success variant used by the "Add to Purchase Manifest" confirmation. */
+.btn--success {
+  background: var(--color-success-tint);
+  border-color: var(--color-success-border);
+  color: var(--color-success-text);
+}
+
+.btn--success:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.18);
+}
+
+.btn__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn__spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: btn-spin 700ms linear infinite;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

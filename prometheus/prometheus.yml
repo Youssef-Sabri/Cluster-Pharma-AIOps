@@ -1,0 +1,35 @@
+# Prometheus scrape configuration for the ClusterOps stack.
+#
+# Scrapes the FastAPI backend every 15 seconds, which keeps the 0.10–1.0 s
+# latency buckets well populated while staying well inside Prometheus's default
+# scrape budget.
+#
+# Synthetic data only: these metrics describe a demonstration backend running
+# against generated data.
+
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+  external_labels:
+    clusterops: "synthetic-demo"
+
+rule_files:
+  - /etc/prometheus/alerts.yml
+
+scrape_configs:
+  - job_name: clusterops-backend
+    metrics_path: /metrics
+    scrape_interval: 15s
+    # Pulled in through the `clusterops` docker network, so the container
+    # hostname resolves without publishing the port on the host.
+    static_configs:
+      - targets: ["backend:8000"]
+        labels:
+          service: clusterops-api
+          environment: local
+
+  # Prometheus's own health, useful for confirming the scraper is alive.
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]

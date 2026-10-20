@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Data & artifacts (regenerate with the data_generator CLI)
+*.db
+*.sqlite3
+mlruns/
+mlflow/artifacts/
+postgres_data/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Node / frontend
+node_modules/
+dist/
+frontend/dist/
+frontend/.vite/
+*.log

@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Strictness — rule: never `any`, always explicit null handling.
+       `noUncheckedIndexedAccess` is the strictest of these: indexing an array
+       yields `T | undefined`, which forces genuinely-present-or-narrowed
+       handling rather than a lie to the type checker. */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Path alias — keeps imports readable and stable */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,133 @@
+.acard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.acard--focused {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+.acard__main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: var(--space-5);
+}
+
+.acard__block {
+  min-width: 0;
+}
+
+.acard__label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.acard__raw {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  word-break: break-word;
+}
+
+.acard__qty {
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.acard__suggestion {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.acard__suggestion--none {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* The status dot replaces the confidence number: green for a suggestion the
+   catalogue recognises, amber for one it does not. */
+.acard__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--color-text-muted);
+}
+
+.acard__dot--known {
+  background: var(--color-success);
+}
+
+.acard__dot--unknown {
+  background: var(--color-warning);
+}
+
+.acard__generic {
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.acard__source {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.acard__time {
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.acard__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-bg-border);
+}
+
+.acard__keys {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-5);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 900px) {
+  .acard__main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .acard__keys {
+    display: none;
+  }
+}

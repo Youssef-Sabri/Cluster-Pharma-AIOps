@@ -1,0 +1,165 @@
+.driftpanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* --------------------------------------------------------------------------
+   Health banner
+   -------------------------------------------------------------------------- */
+
+.driftpanel__banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-bg-border);
+  border-left: 3px solid var(--color-text-muted);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.driftpanel__banner--ok {
+  border-left-color: var(--color-success);
+  background: linear-gradient(90deg, var(--color-success-tint) 0%, var(--color-bg-surface) 42%);
+}
+
+.driftpanel__banner--warning {
+  border-left-color: var(--color-warning);
+  background: linear-gradient(90deg, var(--color-warning-tint) 0%, var(--color-bg-surface) 42%);
+}
+
+.driftpanel__banner--drift_detected {
+  border-left-color: var(--color-danger);
+  background: linear-gradient(90deg, var(--color-danger-tint) 0%, var(--color-bg-surface) 42%);
+}
+
+.driftpanel__banner-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.driftpanel__banner-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.driftpanel__banner-head svg {
+  color: var(--color-text-secondary);
+}
+
+.driftpanel__banner-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.driftpanel__banner-text {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  color: var(--color-text-primary);
+}
+
+.driftpanel__banner-note {
+  margin-top: var(--space-1);
+  max-width: 68ch;
+  font-size: var(--font-size-xs);
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.driftpanel__banner-facts {
+  display: flex;
+  gap: var(--space-6);
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.driftpanel__banner-facts dt {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.driftpanel__banner-facts dd {
+  margin: 3px 0 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Grids
+   -------------------------------------------------------------------------- */
+
+.driftpanel__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.driftpanel__grid--lower {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+}
+
+@media (max-width: 1080px) {
+  .driftpanel__grid,
+  .driftpanel__grid--lower {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Misc
+   -------------------------------------------------------------------------- */
+
+.driftpanel__updating {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.driftpanel__error {
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+}
+
+.driftpanel__error-actions {
+  margin-top: var(--space-4);
+}
+
+.driftpanel__outcome {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-info-border);
+  border-radius: var(--radius-md);
+  background: var(--color-info-tint);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+}
+
+.driftpanel__footnote {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.driftpanel__footnote code {
+  font-family: var(--font-family-mono);
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}

@@ -1,0 +1,111 @@
+.rcard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.rcard--empty {
+  padding: var(--space-6);
+  border-style: dashed;
+  border-color: var(--color-bg-border);
+  background: var(--color-bg-sunken);
+  box-shadow: none;
+}
+
+.rcard__none {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.rcard__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.rcard__label {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.rcard__cost {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-dark);
+}
+
+/* The estimated cost is the headline number of the whole card, so it gets a
+   rule above it and more weight than the supporting rows. */
+.rcard__row--total {
+  margin-top: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-bg-border);
+}
+
+.rcard__row--total dt {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.rcard__row--total dd {
+  font-size: var(--font-size-base);
+  color: var(--color-primary-dark);
+}
+
+.rcard__quantity {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.rcard__quantity strong {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  color: var(--color-text-primary);
+}
+
+.rcard__quantity span {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.rcard__covers {
+  font-size: var(--font-size-xs);
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.rcard__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-bg-border);
+}
+
+.rcard__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.rcard__row dd {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}

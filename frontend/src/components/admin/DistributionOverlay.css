@@ -1,0 +1,102 @@
+.dov {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+}
+
+.dov__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.dov__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.dov__subtitle {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.dov__select {
+  padding: 7px var(--space-3);
+  border: 1px solid var(--color-bg-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  min-width: 170px;
+}
+
+.dov__select:hover:not(:disabled) {
+  border-color: var(--color-primary);
+}
+
+.dov__select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dov__chart {
+  width: 100%;
+  height: 260px;
+}
+
+.dov__empty {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  border: 1px dashed var(--color-bg-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-sunken);
+}
+
+.dov__empty-icon {
+  color: var(--color-text-muted);
+}
+
+.dov__empty-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.dov__empty-text {
+  max-width: 52ch;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.dov__empty-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-2);
+  padding: 5px var(--space-3);
+  border: 1px solid var(--color-info-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-info-tint);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.dov__empty-note code {
+  font-family: var(--font-family-mono);
+  font-size: 10px;
+  color: var(--color-text-primary);
+}

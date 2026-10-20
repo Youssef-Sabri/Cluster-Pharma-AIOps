@@ -1,0 +1,261 @@
+"""FastAPI application entry point.
+
+Startup pre-loads the two expensive singletons the request path needs — the 60-SKU
+catalogue matcher and the MLflow ``Production`` forecasting model — so no request
+pays for a fuzzy index build or a LightGBM restore.  Neither failure is fatal:
+the API still starts and reports ``"degraded"`` on ``/health``, because a health
+probe must distinguish "restart me" from "stop sending me traffic".
+
+Synthetic data only — every response describes generated data.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import logging
+import time
+from contextlib import asynccontextmanager
+from typing import Any, AsyncIterator, Final
+
+from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.middleware.base import BaseHTTPMiddleware
+from sqlalchemy import text
+
+from app.api import drift as drift_routes
+from app.api import forecast as forecast_routes
+from app.api import health as health_routes
+from app.api import match_order as match_order_routes
+from app.api import registry as registry_routes
+from app.api import retrain as retrain_routes
+from app.api import review_queue as review_queue_routes
+from app.api.state import ServiceNotReadyError, state
+from app.config import settings
+from app.database import async_session_factory, dispose_engine
+from app.logging_config import configure_logging, get_logger
+from app.monitoring import metrics
+from app.schemas.common import ErrorDetail, ErrorResponse
+
+logger: Final[logging.Logger] = get_logger("api.main")
+
+#: Frontend origins allowed by CORS (React dev server on :3000).
+ALLOWED_ORIGINS: Final[tuple[str, ...]] = (
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+)
+
+#: Endpoints that must not be counted, so a 15 s Prometheus scrape cannot
+#: inflate the throughput numbers it is scraping.
+UNMETRICSED_PATHS: Final[frozenset[str]] = frozenset({"/metrics"})
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Pre-load singletons on startup and release resources on shutdown."""
+    configure_logging()
+    logger.info(
+        "Starting ClusterOps API",
+        extra={"version": settings.app_version, "environment": settings.environment},
+    )
+
+    await _preload_catalogue()
+    await _preload_model()
+
+    try:
+        yield
+    finally:
+        logger.info("Shutting down ClusterOps API")
+        await dispose_engine()
+
+
+async def _preload_catalogue() -> None:
+    """Load the drug catalogue, falling back to the curated in-memory list."""
+    from app.ml.order_matcher import get_catalogue_matcher, load_catalogue_from_database
+    from app.ml.serving import build_matcher
+
+    try:
+        async with async_session_factory() as session:
+            await session.execute(text("SELECT 1"))
+            catalogue = await load_catalogue_from_database(session)
+    except Exception as exc:  # noqa: BLE001 - startup must survive an unreachable database
+        logger.warning(
+            "Catalogue could not be loaded from PostgreSQL; using the curated list",
+            exc_info=True,
+            extra={"error": str(exc)},
+        )
+        state.startup_errors.append(f"catalogue: {exc}")
+        catalogue = get_catalogue_matcher()
+
+    state.catalogue = catalogue
+    state.matcher = build_matcher(catalogue, enable_llm=bool(settings.gemini_api_key))
+
+
+async def _preload_model() -> None:
+    """Restore the Production forecasting model, if one is registered."""
+    from app.ml.serving import load_production_runtime
+
+    runtime = await asyncio.to_thread(
+        load_production_runtime,
+        tracking_uri=settings.mlflow_tracking_uri,
+        model_name=settings.mlflow_model_name,
+    )
+    if runtime is None:
+        state.startup_errors.append(
+            "forecasting model: no Production version available; /api/v1/forecast will answer 503"
+        )
+    state.runtime = runtime
+
+
+def create_app() -> FastAPI:
+    """Build the FastAPI application (used by tests and by ``uvicorn``)."""
+    application = FastAPI(
+        title="ClusterOps API",
+        version=settings.app_version,
+        description=(
+            "AIOps backend for Egyptian pharmaceutical demand forecasting and order "
+            "matching.\n\n"
+            "* `POST /api/v1/forecast` — multi-horizon demand forecast from the Production model\n"
+            "* `POST /api/v1/match-order` — match a raw order; sub-0.50 confidence is queued for review\n"
+            "* `GET /api/v1/drift-status` — latest PSI per monitored feature\n"
+            "* `POST /api/v1/retrain` — dispatch the nightly retraining flow (202 Accepted)\n"
+            "* `GET /api/v1/model-registry` — registered versions and their promotion history\n"
+            "* `GET|PATCH /api/v1/orders/review-queue` — the pharmacist work queue\n\n"
+            "> **All data is synthetic**, generated by `app.pipelines.data_generator` for "
+            "demonstration purposes. No real pharmacy, order or commercial data is used."
+        ),
+        lifespan=lifespan,
+        openapi_tags=[
+            {"name": "operations", "description": "Health and Prometheus scrape endpoints."},
+            {"name": "forecasting", "description": "Demand forecasting from the Production model."},
+            {"name": "order-matching", "description": "Two-stage raw-order matching."},
+            {"name": "aiops", "description": "Drift detection, retraining and the model registry."},
+            {"name": "human-in-the-loop", "description": "Pharmacist review queue for low-confidence matches."},
+        ],
+    )
+
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=list(ALLOWED_ORIGINS),
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["X-Process-Time-Ms"],
+    )
+    application.add_middleware(MetricsMiddleware)
+
+    application.include_router(health_routes.router)
+    application.include_router(forecast_routes.router)
+    application.include_router(match_order_routes.router)
+    application.include_router(drift_routes.router)
+    application.include_router(retrain_routes.router)
+    application.include_router(registry_routes.router)
+    application.include_router(review_queue_routes.router)
+
+    _register_error_handlers(application)
+    return application
+
+
+class MetricsMiddleware(BaseHTTPMiddleware):
+    """Time every request and record throughput, latency and the response code.
+
+    Written as a :class:`BaseHTTPMiddleware` subclass rather than a bare function
+    because ``add_middleware`` instantiates it with the ASGI app as ``app``; a
+    plain ``(request, call_next)`` function would be called with an unexpected
+    ``app`` keyword.
+
+    The endpoint label is the **route template**, not the concrete path, so a busy
+    review queue with a distinct item UUID per request cannot mint one time series
+    per item.
+    """
+
+    async def dispatch(self, request: Request, call_next: Any) -> Any:
+        started = time.perf_counter()
+        response = await call_next(request)
+        duration = time.perf_counter() - started
+
+        path = request.url.path
+        if path not in UNMETRICSED_PATHS:
+            metrics.observe_request(
+                endpoint=metrics.endpoint_label(request),
+                method=request.method,
+                status_code=response.status_code,
+                duration_seconds=duration,
+            )
+        response.headers["X-Process-Time-Ms"] = f"{duration * 1000.0:.2f}"
+        logger.info(
+            "request",
+            extra={
+                "method": request.method,
+                "path": path,
+                "status_code": response.status_code,
+                "duration_ms": round(duration * 1000.0, 2),
+            },
+        )
+        return response
+
+
+def _error_body(status_code: int, title: str, detail: str, instance: str) -> dict[str, Any]:
+    """Build the RFC 7807 envelope shared by every error response."""
+    return ErrorResponse(
+        error=ErrorDetail(type="about:blank", title=title, status=status_code, detail=detail, instance=instance)
+    ).model_dump(mode="json")
+
+
+def _register_error_handlers(application: FastAPI) -> None:
+    """Map exceptions onto clean problem responses.
+
+    Internal errors are logged in full and returned as a generic message: a
+    traceback or SQL fragment in an API response is an information leak, and the
+    engineering rules forbid exposing internal database errors.
+    """
+
+    @application.exception_handler(ServiceNotReadyError)
+    async def _not_ready(_: Request, exc: ServiceNotReadyError) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content=_error_body(503, "Service Unavailable", str(exc), "/api/v1"),
+        )
+
+    @application.exception_handler(StarletteHTTPException)
+    async def _http_error(request: Request, exc: StarletteHTTPException) -> JSONResponse:
+        # Registered for Starlette's class, not FastAPI's subclass: an unmatched
+        # route raises `StarletteHTTPException` from the router before any
+        # FastAPI handler runs, and a handler bound only to the subclass would
+        # miss it and fall back to FastAPI's bare `{"detail": ...}` shape.
+        title = {404: "Not Found", 405: "Method Not Allowed", 409: "Conflict"}.get(
+            exc.status_code, "Request Failed"
+        )
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=_error_body(exc.status_code, title, str(exc.detail), request.url.path),
+            headers=getattr(exc, "headers", None),
+        )
+
+    @application.exception_handler(Exception)
+    async def _unhandled(request: Request, exc: Exception) -> JSONResponse:
+        logger.error("Unhandled error", exc_info=True, extra={"path": request.url.path})
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content=_error_body(
+                500,
+                "Internal Server Error",
+                "An unexpected error occurred. The incident was logged with the request id.",
+                request.url.path,
+            ),
+        )
+
+
+#: The ASGI application ``uvicorn app.main:app`` serves.
+app: Final[FastAPI] = create_app()
+
+
+__all__ = [
+    "ALLOWED_ORIGINS",
+    "UNMETRICSED_PATHS",
+    "MetricsMiddleware",
+    "app",
+    "create_app",
+    "lifespan",
+]

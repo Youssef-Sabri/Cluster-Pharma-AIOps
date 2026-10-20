@@ -1,0 +1,17 @@
+# Grafana provisioning: loads every dashboard JSON under /var/lib/grafana/dashboards.
+#
+# Synthetic data only.
+
+apiVersion: 1
+
+providers:
+  - name: clusterops
+    orgId: 1
+    folder: ClusterOps
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

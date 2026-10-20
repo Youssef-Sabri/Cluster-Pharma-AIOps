@@ -1,0 +1,74 @@
+# Alerting rules for the ClusterOps AIOps stack.
+#
+# These mirror the engineering thresholds the code enforces:
+#   * PSI >= 0.20            -> DRIFT_DETECTED (Phase 4)
+#   * p95 latency > 0.5 s    -> the documented API SLA (Phase 5)
+#   * low-confidence matches -> the human review queue is backing up (Phase 3)
+#
+# Synthetic data only.
+
+groups:
+  - name: clusterops
+    interval: 30s
+    rules:
+      - alert: ClusterOpsApiDown
+        expr: up{job="clusterops-backend"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "ClusterOps API is not scrapeable"
+          description: "Prometheus has been unable to scrape {{ $labels.instance }} for 2 minutes."
+
+      - alert: ClusterOpsHighErrorRate
+        expr: |
+          sum(rate(clusterops_requests_total{status_code=~"5.."}[5m]))
+            /
+          clamp_min(sum(rate(clusterops_requests_total[5m])), 0.001)
+            > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "ClusterOps API error rate above 5%"
+          description: "5xx responses are {{ $value | humanizePercentage }} of all traffic."
+
+      - alert: ClusterOpsLatencySlaBreach
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(clusterops_request_duration_seconds_bucket[5m])) by (le, endpoint)
+          ) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p95 latency above the 500 ms SLA on {{ $labels.endpoint }}"
+          description: "p95 is {{ $value | humanizeDuration }}; the documented SLA is 500 ms."
+
+      - alert: ClusterOpsDriftDetected
+        expr: clusterops_drift_psi_score >= 0.20
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Drift detected on {{ $labels.feature_name }}"
+          description: "PSI is {{ $value | printf \"%.4f\" }} (>= 0.20); the retraining flow should trigger."
+
+      - alert: ClusterOpsLowConfidenceBacklog
+        expr: rate(clusterops_low_confidence_total[10m]) > 0.3
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Elevated rate of low-confidence order matches"
+          description: "{{ $value | printf \"%.3f\" }} items/s are being queued for pharmacist review."
+
+      - alert: ClusterOpsHighForecastError
+        expr: clusterops_forecast_mae > 3.0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Forecast MAE above 3 units for {{ $labels.product_id }}"
+          description: "In-sample MAE is {{ $value | printf \"%.3f\" }} units."
